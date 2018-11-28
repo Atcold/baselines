@@ -1,8 +1,11 @@
+from os import getpid
+
 import numpy as np
 from multiprocessing import Process, Pipe
 from . import VecEnv, CloudpickleWrapper
 
 def worker(remote, parent_remote, env_fn_wrapper):
+    print(80 * '-', f'Worker thread PID: {getpid()}', 80 * '-', sep='\n')
     parent_remote.close()
     env = env_fn_wrapper.x()
     try:
@@ -12,8 +15,11 @@ def worker(remote, parent_remote, env_fn_wrapper):
                 ob, reward, done, info = env.step(data)
                 if done:
                     ob = env.reset()
+                    # print(f'\n > Episode completed. RESETTING gym on {getpid()}')
                 remote.send((ob, reward, done, info))
+                # if done: print(' > Data sent to the parent.')
             elif cmd == 'reset':
+                # print(f'\n > Worker RESETTING gym on {getpid()}')
                 ob = env.reset()
                 remote.send(ob)
             elif cmd == 'render':
@@ -46,6 +52,7 @@ class SubprocVecEnv(VecEnv):
         self.closed = False
         nenvs = len(env_fns)
         self.remotes, self.work_remotes = zip(*[Pipe() for _ in range(nenvs)])
+        print(80 * '-', f'Main thread PID: {getpid()}', 80 * '-', sep='\n')
         self.ps = [Process(target=worker, args=(work_remote, remote, CloudpickleWrapper(env_fn)))
                    for (work_remote, remote, env_fn) in zip(self.work_remotes, self.remotes, env_fns)]
         for p in self.ps:

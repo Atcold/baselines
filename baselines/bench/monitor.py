@@ -13,7 +13,7 @@ class Monitor(Wrapper):
     EXT = "monitor.csv"
     f = None
 
-    def __init__(self, env, filename, allow_early_resets=False, reset_keywords=(), info_keywords=()):
+    def __init__(self, env, filename, allow_early_resets=False, reset_keywords=(), info_keywords=('v', 'a')):
         Wrapper.__init__(self, env=env)
         self.tstart = time.time()
         self.results_writer = ResultsWriter(

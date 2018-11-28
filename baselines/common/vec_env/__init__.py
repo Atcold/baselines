@@ -39,6 +39,7 @@ class VecEnv(ABC):
 
     @abstractmethod
     def reset(self):
+        import ipdb; ipdb.set_trace()
         """
         Reset all the environments and return an array of
         observations, or a dict of observation arrays.

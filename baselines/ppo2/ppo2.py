@@ -176,9 +176,10 @@ class Runner(AbstractEnvRunner):
             # Take actions in env and look the results
             # Infos contains a ton of useful informations
             self.obs[:], rewards, self.dones, infos = self.env.step(actions)
-            for info in infos:
-                maybeepinfo = info.get('episode')
-                if maybeepinfo: epinfos.append(maybeepinfo)
+            # for info in infos:
+            #     maybeepinfo = info.get('episode')
+            #     if maybeepinfo: epinfos.append(maybeepinfo)
+            epinfos.append(infos)
             mb_rewards.append(rewards)
         #batch of steps to batch of rollouts
         mb_obs = np.asarray(mb_obs, dtype=self.obs.dtype)
@@ -220,8 +221,8 @@ def constfn(val):
 
 def learn(*, network, env, total_timesteps, seed=None, nsteps=2048, ent_coef=0.0, lr=3e-4,
             vf_coef=0.5,  max_grad_norm=0.5, gamma=0.99, lam=0.95,
-            log_interval=10, nminibatches=4, noptepochs=4, cliprange=0.2,
-            save_interval=0, load_path=None, **network_kwargs):
+            log_interval=1, nminibatches=4, noptepochs=4, cliprange=0.2,
+            save_interval=20, load_path=None, **network_kwargs):
     '''
     Learn policy using PPO algorithm (https://arxiv.org/abs/1707.06347)
 
@@ -306,15 +307,17 @@ def learn(*, network, env, total_timesteps, seed=None, nsteps=2048, ent_coef=0.0
     if load_path is not None:
         model.load(load_path)
     # Instantiate the runner object
-    runner = Runner(env=env, model=model, nsteps=nsteps, gamma=gamma, lam=lam)
+    if total_timesteps:
+        runner = Runner(env=env, model=model, nsteps=nsteps, gamma=gamma, lam=lam)
 
-    epinfobuf = deque(maxlen=100)
+    # epinfobuf = deque(maxlen=100)
 
     # Start total timer
     tfirststart = time.time()
 
     nupdates = total_timesteps//nbatch
     for update in range(1, nupdates+1):
+        if update == 1: print('Starting training loop!')
         assert nbatch % nminibatches == 0
         # Start timer
         tstart = time.time()
@@ -325,7 +328,7 @@ def learn(*, network, env, total_timesteps, seed=None, nsteps=2048, ent_coef=0.0
         cliprangenow = cliprange(frac)
         # Get minibatch
         obs, returns, masks, actions, values, neglogpacs, states, epinfos = runner.run() #pylint: disable=E0632
-        epinfobuf.extend(epinfos)
+        # epinfobuf.extend(epinfos)
 
         # Here what we're going to do is for each minibatch calculate the loss and append it.
         mblossvals = []
@@ -373,8 +376,8 @@ def learn(*, network, env, total_timesteps, seed=None, nsteps=2048, ent_coef=0.0
             logger.logkv("total_timesteps", update*nbatch)
             logger.logkv("fps", fps)
             logger.logkv("explained_variance", float(ev))
-            logger.logkv('eprewmean', safemean([epinfo['r'] for epinfo in epinfobuf]))
-            logger.logkv('eplenmean', safemean([epinfo['l'] for epinfo in epinfobuf]))
+            # logger.logkv('eprewmean', safemean([epinfo['r'] for epinfo in epinfobuf]))
+            # logger.logkv('eplenmean', safemean([epinfo['l'] for epinfo in epinfobuf]))
             logger.logkv('time_elapsed', tnow - tfirststart)
             for (lossval, lossname) in zip(lossvals, model.loss_names):
                 logger.logkv(lossname, lossval)

@@ -15,6 +15,13 @@ from importlib import import_module
 from baselines.common.vec_env.vec_normalize import VecNormalize
 from baselines.common import atari_wrappers, retro_wrappers
 
+
+# Side-load our traffic project ########################################################################################
+import sys
+import os
+sys.path.append(os.path.abspath('/home/atcold/Work/GitHub/pytorch-Traffic-Simulator'))
+########################################################################################################################
+
 try:
     from mpi4py import MPI
 except ImportError:
@@ -50,6 +57,8 @@ _game_envs['retro'] = {
     'SpaceInvaders-Snes',
 }
 
+_game_envs['traffic'] = {'I-80-v1'}
+
 
 def train(args, extra_args):
     env_type, env_id = get_env_type(args.env)
@@ -61,6 +70,7 @@ def train(args, extra_args):
     learn = get_learn_function(args.alg)
     alg_kwargs = get_learn_function_defaults(args.alg, env_type)
     alg_kwargs.update(extra_args)
+    args.__dict__.update(extra_args)
 
     env = build_env(args)
 
@@ -92,6 +102,23 @@ def build_env(args):
 
     env_type, env_id = get_env_type(args.env)
 
+    if 'I-80-v1' not in gym.envs.registry.env_specs:
+        gym.envs.registration.register(
+            id='I-80-v1',
+            entry_point='map_i80_ctrl:ControlledI80',
+            kwargs=dict(
+                fps=50,
+                nb_states=args.n_cond,
+                display=args.play,
+                delta_t=0.1,
+                return_reward=True,
+                normalise_state=True,
+                normalise_action=True,
+                gamma=float(args.gamma),
+                show_frame_count=False,
+            ),
+        )
+
     if env_type == 'atari':
         if alg == 'acer':
             env = make_vec_env(env_id, env_type, nenv, seed)
@@ -121,14 +148,18 @@ def build_env(args):
         env = retro_wrappers.wrap_deepmind_retro(env)
 
     else:
-       get_session(tf.ConfigProto(allow_soft_placement=True,
-                                   intra_op_parallelism_threads=1,
-                                   inter_op_parallelism_threads=1))
+        get_session(tf.ConfigProto(allow_soft_placement=True,
+                                    intra_op_parallelism_threads=1,
+                                    inter_op_parallelism_threads=1))
 
-       env = make_vec_env(env_id, env_type, args.num_env or 1, seed, reward_scale=args.reward_scale)
+        env = make_vec_env(env_id, env_type, args.num_env or 1, seed, reward_scale=args.reward_scale)
+        # env = make_vec_env(env_id, env_type, nenv, seed, reward_scale=args.reward_scale)
 
-       if env_type == 'mujoco':
-           env = VecNormalize(env)
+        if env_type == 'mujoco':
+            env = VecNormalize(env)
+
+        if env_type == 'traffic':
+            env = VecNormalize(env, ob=False, ret=True)
 
     return env
 
@@ -151,6 +182,8 @@ def get_env_type(env_id):
 def get_default_network(env_type):
     if env_type == 'atari':
         return 'cnn'
+    if env_type == 'traffic':
+        return 'traffic_model'
     else:
         return 'mlp'
 
@@ -228,10 +261,50 @@ def main():
             actions, _, state, _ = model.step(obs,S=state, M=dones)
             obs, _, done, _ = env.step(actions)
             env.render()
-            done = done.any() if isinstance(done, np.ndarray) else done
+            # done = done.any() if isinstance(done, np.ndarray) else done
 
-            if done:
-                obs = env.reset()
+            # dummy_vec_env is resetting the env already
+            # if done:
+            #     obs = env.reset()
+
+    if args.eval:
+        print('Evaluating PPO')
+        import pickle
+        from tqdm import tqdm
+
+        file_path = '/home/atcold/Work/GitHub/pytorch-Traffic-Simulator'
+        with open(f'{file_path}/test_indx.pkl', 'rb') as f:
+            test_data = pickle.load(f)
+
+        TIMESLOT = 0
+        CAR_ID = 1
+
+        env = build_env(args)
+        distances = list()
+        arrived = list()
+        for k, v in tqdm(test_data.items()):
+            # print(f'Processing sample {k}: car {v[CAR_ID]} from timeslot {v[TIMESLOT]}')
+            obs = env.reset(time_slot=v[TIMESLOT], vehicle_id=v[CAR_ID])  # if None => picked at random
+            car = env.venv.envs[0].env.controlled_car['locked']
+            initial_position = car._position[0]
+            done = False
+            while not done:
+                actions, _, _, _ = model.step(obs)
+                obs, _, done, _ = env.step(actions)
+                done = done.any()
+                # env.render()
+            final_position = car._position[0]
+            travelled_distance = final_position - initial_position
+            distances.append(travelled_distance)
+            arrived.append(car.arrived_to_dst)
+
+        print('Dumping stats to file')
+        os.system('mkdir -p PPO-performance')
+        with open(f'PPO-performance/{osp.basename(extra_args.get("load_path"))}.pkl', 'wb') as f:
+            pickle.dump(dict(
+                distances=distances,
+                arrived=arrived
+            ), f)
 
         env.close()
 

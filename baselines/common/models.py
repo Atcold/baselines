@@ -4,6 +4,7 @@ from baselines.a2c import utils
 from baselines.a2c.utils import conv, fc, conv_to_fc, batch_to_seq, seq_to_batch
 from baselines.common.mpi_running_mean_std import RunningMeanStd
 import tensorflow.contrib.layers as layers
+from baselines.common.traffic_models import traffic_model as tm
 
 mapping = {}
 
@@ -12,6 +13,10 @@ def register(name):
         mapping[name] = func
         return func
     return _thunk
+
+@register('traffic_model')
+def traffic_model(n_cond):
+    return tm(n_cond)
 
 def nature_cnn(unscaled_images, **conv_kwargs):
     """

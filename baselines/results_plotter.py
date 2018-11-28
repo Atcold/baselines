@@ -1,4 +1,5 @@
 import numpy as np
+import os
 import matplotlib
 matplotlib.use('TkAgg') # Can change to 'Agg' for non-interactive mode
 
@@ -13,7 +14,7 @@ X_WALLTIME = 'walltime_hrs'
 Y_REWARD = 'reward'
 Y_TIMESTEPS = 'timesteps'
 POSSIBLE_X_AXES = [X_TIMESTEPS, X_EPISODES, X_WALLTIME]
-EPISODES_WINDOW = 100
+EPISODES_WINDOW = 500
 COLORS = ['blue', 'green', 'red', 'cyan', 'magenta', 'yellow', 'black', 'purple', 'pink',
         'brown', 'orange', 'teal', 'coral', 'lightblue', 'lime', 'lavender', 'turquoise',
         'darkgreen', 'tan', 'salmon', 'gold', 'lightpurple', 'darkred', 'darkblue']
@@ -70,6 +71,7 @@ def plot_results(dirs, num_timesteps, xaxis, yaxis, task_name):
         tslist.append(ts)
     xy_list = [ts2xy(ts, xaxis, yaxis) for ts in tslist]
     plot_curves(xy_list, xaxis, yaxis, task_name)
+    plt.legend([os.path.basename(d) for d in dirs])
 
 # Example usage in jupyter-notebook
 # from baselines import log_viewer
