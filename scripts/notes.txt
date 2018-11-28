@@ -1,0 +1,127 @@
+--------------------------------------------------------------------------------
+~/atcold/RL-results/2018-09-17_23:36:05_seed={0,1,2}_lr={2e-4,7e-7=4,2e-3}/
+rew = 1 - proximity_cost
+--------------------------------------------------------------------------------
+~/atcold/RL-results/2018-09-18_18:07:31_seed={0,1,2}_lr={2e-4,7e-7=4,2e-3}/
+rew = 5 - proximity_cost
+--------------------------------------------------------------------------------
+~/atcold/RL-results/2018-09-18_19:43:50_seed={0,1,2}_lr={2e-4,7e-7=4,2e-3}/
+rew = proximity_cost
+--------------------------------------------------------------------------------
+~/atcold/RL-results/2018-09-18_22:01:18_seed={0,1,2}_lr={2e-4,7e-7=4,2e-3}/
+rew = -proximity_cost
+--------------------------------------------------------------------------------
+~/atcold/RL-results/2018-09-18_23:15:42_seed=0_lr={2,7}e-4
+rew = -cost['pixel_proximity_cost'] + arrived - done * (not arrived)
+--------------------------------------------------------------------------------
+rew = 1 - cost['pixel_proximity_cost'] + 10 * arrived - 10 * done * (not arrived)
+--------------------------------------------------------------------------------
+~/RL-results/2018-09-21_20:04:16_seed={0,1,2}_lr=2e-4
+done = done or collision
+rew = 2 - cost['pixel_proximity_cost'] - cost['lane_cost'] + 10 * arrived - 10 * done * (not arrived)
+--------------------------------------------------------------------------------
+~/RL-results/2018-09-21_20\:27\:2?_seed={0,1,2}_lr=2e-4
+done = done or collision
+rew = 2 - cost['pixel_proximity_cost'] - cost['lane_cost'] + 10 * arrived - 10 * done * (not arrived)
+numpy.clip(actions, a_min=a_min, a_max=a_max, out=actions)
+--------------------------------------------------------------------------------
+~/RL-results/2018-09-21_20\:32:\02_seed={0,1,2}_lr=2e-4
+# no collision death
+rew = 2 - cost['pixel_proximity_cost'] - cost['lane_cost'] + 10 * arrived - 10 * done * (not arrived)
+numpy.clip(actions, a_min=a_min, a_max=a_max, out=actions)
+--------------------------------------------------------------------------------
+~/RL-results/2018-09-23_00:50:05_seed={0,1,2}_lr={2e-4,7e-7=4,2e-3}/
+done = done or collision
+rew = 2 - cost['pixel_proximity_cost'] - cost['lane_cost'] + 10 * arrived - 10 * done * (not arrived)
+# normalised action and state
+--------------------------------------------------------------------------------
+/home/atcold/RL-results/2018-09-23_18:45:09_seed={0,1,2}_lr=7e-4
+# no collision death
+reward = 2 - pixel_proximity_cost - lane_cost + 200 * arrived
+# normalised action and state
+--------------------------------------------------------------------------------
+/home/atcold/RL-results/2018-09-23_18:51:02_seed={0,1,2}_lr=7e-4
+done = done or collision
+reward = 2 - pixel_proximity_cost - lane_cost + 200 * arrived
+# normalised action and state
+--------------------------------------------------------------------------------
+/home/atcold/RL-results/2018-09-24_02:09:12_seed={0,1,2}_lr=7e-4
+--ent_coef=0
+done = done or collision
+reward = 2 - pixel_proximity_cost - lane_cost + 200 * arrived
+# normalised action and state
+--------------------------------------------------------------------------------
+/home/atcold/RL-results/2018-09-24_03:14:09_seed={0,1,2}_lr=7e-4
+# as above, log policy loss as well
+--------------------------------------------------------------------------------
+ ~/RL-results/2018-09-24_03\:16\:5*
+--max_grad_norm=0.1
+done = done or collision
+reward = 2 - pixel_proximity_cost - lane_cost + 200 * arrived
+# normalised action and state
+--------------------------------------------------------------------------------
+~/RL-results/2018-09-24_20:22:5?_seed=0_lr={2e-4,7e-4,2e-3}_gamma=0.9{0,5,9}
+done = done or collision
+max_rew = 2
+win = max_rew / (1 - gamma)
+reward = (max_rew - cost['pixel_proximity_cost'] - cost['lane_cost'] + win * arrived) / win
+# normalised action and state
+--------------------------------------------------------------------------------
+~/RL-results/2018-09-26_02\:38\:1*
+PPO!
+done = done or collision
+max_rew = 2
+win = max_rew / (1 - gamma)
+reward = (max_rew - cost['pixel_proximity_cost'] - cost['lane_cost'] + win * arrived) / win
+# normalised action and state
+--------------------------------------------------------------------------------
+~/RL-results/2018-10-18_19:??:??_seed={0,1}_lr={1e-4,3e-4,1e-3}_gamma=0.99
+done = done or collision
+max_rew = 2
+win = max_rew / (1 - gamma)
+reward = max_rew - cost['pixel_proximity_cost'] - cost['lane_cost'] + win * arrived
+# finally something is working but... just 1e6 timesteps
+# best reward: ~550, longest lifespan: 260 (26s)
+--------------------------------------------------------------------------------
+~/RL-results/2018-10-20_02:05:11_seed={0,1}_lr={1e-4,3e-4,1e-3}_gamma=0.99
+# as above, 1e7 timesteps, 2d running reached
+--------------------------------------------------------------------------------
+~/RL-results/2018-10-24_*_seed={0,1}_lr={1e-4,3e-4,1e-3}_gamma=0.99
+# resume training, using 6 mini-batches instead of 4 (running out of mem otherwise)
+--------------------------------------------------------------------------------
+~/RL-results/2018-10-29_*_seed={0,1}_lr={3e-5,1e-4,3e-4}_gamma=0.99
+# interating only over training split
+# 2d running reached
+--------------------------------------------------------------------------------
+~/RL-results/2018-10-31_*_seed={0,1}_lr={3e-5,1e-4,3e-4}_gamma=0.99
+# interating only over training split
+# resuming after 2 day resources limit
+--------------------------------------------------------------------------------
+~/RL-results/2018-11-02_16:29:01_seed=2_lr={3e-5,1e-4,3e-4}_gamma=0.99
+# interating only over training split, 3rd seed
+# 2d running reached
+--------------------------------------------------------------------------------
+~/RL-results/2018-11-04_18:32:09_seed=2_lr={3e-5,1e-4,3e-4}_gamma=0.99
+# interating only over training split, 3rd seed
+# resuming after 2 day resources limit
+--------------------------------------------------------------------------------
+~/RL/logs/PPO-i80-124036.out
+~/RL/logs/PPO-i80-124035.out
+~/RL/logs/PPO-i80-124034.out
+~/RL/logs/PPO-i80-124033.out
+~/RL/logs/PPO-i80-124031.out
+~/RL/logs/PPO-i80-124032.out
+~/RL/logs/PPO-i80-124548.out
+~/RL/logs/PPO-i80-124549.out
+~/RL/logs/PPO-i80-124550.out
+# Computing stats
+--------------------------------------------------------------------------------
+~/RL-results/2018-11-25_*_seed={0,1,2}_lr={3e-5,1e-4}_gamma=0.99
+# interating only over training split
+# lambda_lane = 0.2
+# 2d running reached
+--------------------------------------------------------------------------------
+~/RL-results/2018-11-27_*_seed={0,1,2}_lr={3e-5,1e-4}_gamma=0.99
+# interating only over training split
+# lambda_lane = 0.2
+# resuming after 2 day resources limit
