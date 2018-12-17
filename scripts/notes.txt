@@ -116,6 +116,16 @@ reward = max_rew - cost['pixel_proximity_cost'] - cost['lane_cost'] + win * arri
 ~/RL/logs/PPO-i80-124550.out
 # Computing stats
 --------------------------------------------------------------------------------
+seed0_lr3e-5.pkl - MAD: 181.26 m, arrival-rate: 79.82 %
+seed0_lr1e-4.pkl - MAD: 180.60 m, arrival-rate: 78.04 %
+seed0_lr3e-4.pkl - MAD: 156.99 m, arrival-rate: 58.39 %
+seed1_lr3e-5.pkl - MAD: 183.13 m, arrival-rate: 80.71 %
+seed1_lr1e-4.pkl - MAD: 178.56 m, arrival-rate: 78.39 %
+seed1_lr3e-4.pkl - MAD: 149.66 m, arrival-rate: 55.54 %
+seed2_lr3e-5.pkl - MAD: 180.25 m, arrival-rate: 79.64 %
+seed2_lr1e-4.pkl - MAD: 171.68 m, arrival-rate: 73.21 %
+seed2_lr3e-4.pkl - MAD: 155.79 m, arrival-rate: 58.21 %
+--------------------------------------------------------------------------------
 ~/RL-results/2018-11-25_*_seed={0,1,2}_lr={3e-5,1e-4}_gamma=0.99
 # interating only over training split
 # lambda_lane = 0.2
@@ -125,3 +135,18 @@ reward = max_rew - cost['pixel_proximity_cost'] - cost['lane_cost'] + win * arri
 # interating only over training split
 # lambda_lane = 0.2
 # resuming after 2 day resources limit
+--------------------------------------------------------------------------------
+~/RL/logs/PPO-i80-131091.out
+~/RL/logs/PPO-i80-131092.out
+~/RL/logs/PPO-i80-131093.out
+~/RL/logs/PPO-i80-131094.out
+~/RL/logs/PPO-i80-131095.out
+~/RL/logs/PPO-i80-131096.out
+# Computing stats
+--------------------------------------------------------------------------------
+seed0_lr3e-5.pkl - MAD: 184.97 m, arrival-rate: 80.18 %
+seed0_lr1e-4.pkl - MAD: 173.05 m, arrival-rate: 69.82 %
+seed1_lr3e-5.pkl - MAD: 184.84 m, arrival-rate: 81.79 %
+seed1_lr1e-4.pkl - MAD: 181.92 m, arrival-rate: 80.00 %
+seed2_lr3e-5.pkl - MAD: 173.24 m, arrival-rate: 71.43 %
+seed2_lr1e-4.pkl - MAD: 180.77 m, arrival-rate: 78.75 %

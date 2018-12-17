@@ -6,6 +6,7 @@ from os import listdir
 
 # Load data
 src_path = 'PPO-performance/'
+src_path = 'PPO_train-0.2_lane-performance/'
 for file_name in listdir(src_path):
     with open(src_path + file_name, 'rb') as f: stats = pickle.load(f)
 
